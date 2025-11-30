@@ -1,0 +1,120 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+Thumbs.db
+
+# Logs
+*.log
+            </div>
+            
+            {preview.length > 10 && (
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                <div className="flex items-center">
+                  <ExclamationTriangleIcon className="h-5 w-5 text-blue-600 mr-2" />
+                  <p className="text-sm text-blue-800">
+                    Preview shows first 10 rows. All {uploadedFile.rowCount.toLocaleString()} rows will be available for analysis.
+                  </p>
+                </div>
+              </div>
+            )}
+          </Card>
+        )}
+
+        {/* Instructions */}
+        {!uploadedFile && (
+          <Card>
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Getting Started</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-8 h-8 bg-indigo-100 text-indigo-800 rounded-full flex items-center justify-center text-sm font-semibold">
+                  1
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900">Upload File</h4>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Upload your Excel file (.xlsx or .xls format)
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-8 h-8 bg-indigo-100 text-indigo-800 rounded-full flex items-center justify-center text-sm font-semibold">
+                  2
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900">Preview Data</h4>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Review your data to ensure it uploaded correctly
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-8 h-8 bg-indigo-100 text-indigo-800 rounded-full flex items-center justify-center text-sm font-semibold">
+                  3
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900">Create Charts</h4>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Click "Analyze Data" to create interactive visualizations
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+              <div className="flex">
+                <ExclamationTriangleIcon className="h-5 w-5 text-yellow-600 mt-0.5 mr-3 flex-shrink-0" />
+                <div>
+                  <h4 className="text-sm font-medium text-yellow-800">File Requirements</h4>
+                  <ul className="text-sm text-yellow-700 mt-1 space-y-1">
+                    <li>• File formats: .xlsx or .xls only</li>
+                    <li>• Maximum file size: 10MB</li>
+                    <li>• Ensure your data has proper column headers</li>
+                    <li>• Remove any merged cells for best results</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Upload;export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
