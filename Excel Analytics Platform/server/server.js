@@ -49,17 +49,22 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+//Root route
+app.get("/", (req, res) => {
+  res.send("Excel Analytics Backend Running 🚀");
+});
+
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({ message: 'Route not found' });
+});
+
 // Error handling middleware
 app.use((error, req, res, next) => {
   console.error(error);
   res.status(error.status || 500).json({
     message: error.message || 'Internal server error'
   });
-});
-
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Route not found' });
 });
 
 const PORT = process.env.PORT || 5000;
