@@ -42,11 +42,18 @@ const Upload = () => {
     formData.append('file', file);
 
     try {
-      const response = await axios.post('/api/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const token = localStorage.getItem("token");
+
+const response = await axios.post(
+  "https://excel-analytics-platform-vj3o.onrender.com/api/upload",
+  formData,
+  {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
 
       const { upload } = response.data;
       setUploadedFile(upload);
