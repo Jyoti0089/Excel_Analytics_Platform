@@ -1,3 +1,5 @@
+// src/components/Analyze/Analyze.js
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -14,6 +16,7 @@ import {
   BookmarkIcon,
   ArrowPathIcon 
 } from '@heroicons/react/24/outline';
+import { API_URL } from '../../config'; // ✅ added for live backend
 
 const Analyze = () => {
   const { uploadId } = useParams();
@@ -39,10 +42,9 @@ const Analyze = () => {
   const fetchUploadData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`/api/upload/${uploadId}`);
+      const response = await axios.get(`${API_URL}/api/upload/${uploadId}`); // ✅ live backend
       setUploadData(response.data.upload);
       
-      // Set default axes if available
       if (response.data.upload.headers.length >= 2) {
         setChartConfig(prev => ({
           ...prev,
@@ -61,10 +63,10 @@ const Analyze = () => {
   const fetchLatestUpload = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/upload');
+      const response = await axios.get(`${API_URL}/api/upload`); // ✅ live backend
       if (response.data.uploads.length > 0) {
         const latestUpload = response.data.uploads[0];
-        const dataResponse = await axios.get(`/api/upload/${latestUpload._id}`);
+        const dataResponse = await axios.get(`${API_URL}/api/upload/${latestUpload._id}`); // ✅ live backend
         setUploadData(dataResponse.data.upload);
         
         if (dataResponse.data.upload.headers.length >= 2) {
@@ -107,7 +109,7 @@ const Analyze = () => {
         chartConfig: chartConfig
       };
 
-      await axios.post('/api/analysis', analysisData);
+      await axios.post(`${API_URL}/api/analysis`, analysisData); // ✅ live backend
       toast.success('Analysis saved successfully!');
     } catch (error) {
       console.error('Failed to save analysis:', error);
@@ -118,7 +120,6 @@ const Analyze = () => {
   };
 
   const downloadChart = () => {
-    // This will be handled by the Chart component
     const event = new CustomEvent('downloadChart');
     window.dispatchEvent(event);
   };
@@ -168,7 +169,6 @@ const Analyze = () => {
   return (
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <div className="px-4 py-6 sm:px-0">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
           <div className="mb-4 sm:mb-0">
             <h1 className="text-3xl font-bold text-gray-900">Analyze Data</h1>
@@ -216,7 +216,6 @@ const Analyze = () => {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Chart Controls */}
           <div className="lg:col-span-1 space-y-6">
             {uploadData && (
               <ChartControls
@@ -226,7 +225,6 @@ const Analyze = () => {
               />
             )}
             
-            {/* Data Insights */}
             {uploadData && chartConfig.xAxis && chartConfig.yAxis && (
               <DataInsights
                 data={uploadData.data}
@@ -236,7 +234,6 @@ const Analyze = () => {
             )}
           </div>
 
-          {/* Chart Display */}
           <div className="lg:col-span-2">
             <Card>
               <div className="mb-4">

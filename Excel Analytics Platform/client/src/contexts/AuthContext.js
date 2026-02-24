@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { API_URL } from '../config';
 
 const AuthContext = createContext();
 
-// Auth actions
 const AUTH_ACTIONS = {
   SET_LOADING: 'SET_LOADING',
   SET_USER: 'SET_USER',
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
     error: null
   });
 
-  // Set up axios interceptors
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -44,7 +44,6 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
     }
 
-    // Response interceptor for handling token expiration
     const interceptor = axios.interceptors.response.use(
       (response) => response,
       (error) => {
@@ -71,7 +70,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get('/api/auth/profile');
+      const response = await axios.get(`${API_URL}/api/auth/profile`);
       dispatch({ type: AUTH_ACTIONS.SET_USER, payload: response.data.user });
     } catch (error) {
       console.error('Failed to fetch user:', error);
@@ -84,14 +83,14 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: true });
-      
-      const response = await axios.post('/api/auth/login', { email, password });
+
+      const response = await axios.post(`${API_URL}/api/auth/login`, { email, password });
       const { token, user } = response.data;
-      
+
       localStorage.setItem('token', token);
       setAuthToken(token);
       dispatch({ type: AUTH_ACTIONS.SET_USER, payload: user });
-      
+
       toast.success(`Welcome back, ${user.name}!`);
       return { success: true };
     } catch (error) {
@@ -105,14 +104,14 @@ export const AuthProvider = ({ children }) => {
   const register = async (name, email, password) => {
     try {
       dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: true });
-      
-      const response = await axios.post('/api/auth/register', { name, email, password });
+
+      const response = await axios.post(`${API_URL}/api/auth/register`, { name, email, password });
       const { token, user } = response.data;
-      
+
       localStorage.setItem('token', token);
       setAuthToken(token);
       dispatch({ type: AUTH_ACTIONS.SET_USER, payload: user });
-      
+
       toast.success(`Welcome, ${user.name}!`);
       return { success: true };
     } catch (error) {
