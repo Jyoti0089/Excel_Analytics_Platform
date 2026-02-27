@@ -1,3 +1,4 @@
+const historyRoutes = require('./routes/history');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -40,6 +41,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
+app.use('/api/history', historyRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/analysis', analysisRoutes);
