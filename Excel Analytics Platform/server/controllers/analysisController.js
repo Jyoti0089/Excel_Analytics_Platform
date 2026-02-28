@@ -5,7 +5,7 @@ const createAnalysis = async (req, res) => {
   try {
     const { uploadId, title, chartType, xAxis, yAxis, colorScheme, chartConfig } = req.body;
 
-    // Verify upload exists and belongs to user
+    // 1️⃣ Verify upload exists and belongs to user
     const upload = await Upload.findOne({
       _id: uploadId,
       userId: req.user._id
@@ -15,19 +15,51 @@ const createAnalysis = async (req, res) => {
       return res.status(404).json({ message: 'Upload not found' });
     }
 
-    // Calculate insights
+    // 2️⃣ Validate X and Y axis
+    if (!xAxis || !yAxis) {
+      return res.status(400).json({ message: 'X and Y axis are required' });
+    }
+
+    // 3️⃣ Check if upload data exists
+    if (!upload.data || upload.data.length === 0) {
+      return res.status(400).json({ message: 'No data found in upload' });
+    }
+
+    // 4️⃣ Validate Y-axis is numeric column
+    const sampleValue = upload.data[0][yAxis];
+
+    if (isNaN(Number(sampleValue))) {
+      return res.status(400).json({
+        message: 'Y-axis must be a numeric column'
+      });
+    }
+
+    // 5️⃣ Calculate insights safely
     const yAxisData = upload.data
       .map(row => Number(row[yAxis]))
       .filter(val => !isNaN(val));
 
-    const insights = {
-      average: yAxisData.reduce((a, b) => a + b, 0) / yAxisData.length,
-      maximum: Math.max(...yAxisData),
-      minimum: Math.min(...yAxisData),
-      total: yAxisData.reduce((a, b) => a + b, 0),
-      count: yAxisData.length
+    let insights = {
+      average: 0,
+      maximum: 0,
+      minimum: 0,
+      total: 0,
+      count: 0
     };
 
+    if (yAxisData.length > 0) {
+      const total = yAxisData.reduce((a, b) => a + b, 0);
+
+      insights = {
+        average: total / yAxisData.length,
+        maximum: Math.max(...yAxisData),
+        minimum: Math.min(...yAxisData),
+        total: total,
+        count: yAxisData.length
+      };
+    }
+
+    // 6️⃣ Save analysis
     const analysis = await Analysis.create({
       userId: req.user._id,
       uploadId,
@@ -45,6 +77,7 @@ const createAnalysis = async (req, res) => {
       message: 'Analysis saved successfully',
       analysis
     });
+
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
